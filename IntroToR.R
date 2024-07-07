@@ -103,7 +103,8 @@ df <- data.frame("Numbers" = 11:25,
                  "Letters" = letters[1:15])
 # Work with some real (fake) data!
 # Define a variable with the path to the folder
-DataPath <- "~/Google Drive/My Drive/Mrinmayi/Personal/Talks/202407_RRIIntroToRWorkshop/IntroToR/"
+#DataPath_Mac <- "~/Downloads/IntroToR-main/"
+#DataPath <- "C:\Users\[USER_NAME]\Downloads\"
 # Read in Test phase data
 TestData <- read.csv(paste0(DataPath, "TestData.csv"))
 # Look at the data
