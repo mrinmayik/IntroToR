@@ -8,7 +8,7 @@
 # Set seed so results replicate
 set.seed(1)
 
-NumTrialsPerCond <- 25
+NumTrialsPerCond <- 50
 ConcreteNouns <- c(
   "Apple", "Car", "House", "Tree", "Dog", 
   "Computer", "Chair", "Book", "Table", "River", 
@@ -25,7 +25,7 @@ AbstractNouns <- c(
 )
 
 Participants <- sprintf("sub-0%02s", 1:20)
-DataPath <- "~/Google Drive/My Drive/Mrinmayi/Personal/Talks/202407_RRIIntroToRWorkshop/"
+DataPath <- "~/Google Drive/My Drive/Mrinmayi/Personal/Talks/202407_RRIIntroToRWorkshop/IntroToR/"
 
 TestData <- lapply(Participants,
                    function(x) {
@@ -45,6 +45,8 @@ TestData <- lapply(Participants,
                                                         sample(ConcreteNouns)),
                                            Condition = c(rep("Abstract", NumTrialsPerCond),
                                                          rep("Concrete", NumTrialsPerCond)),
+                                           TrialType = sample(c(rep("Old", 25),
+                                                                rep("New", 25))),
                                            Accuracy = c(rep(1, NumAbstractCorrect), 
                                                         rep(0, NumTrialsPerCond-NumAbstractCorrect),
                                                         rep(1, NumConcreteCorrect), 
