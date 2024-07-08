@@ -141,8 +141,8 @@ Participant1Data <- Data %>%
 
 ###### Summarise data
 # Get average accuracy and RT per participant
-SummaryData <- TestData %>% 
-  group_by(Participant) %>% 
+Condition_Summary <- TestData %>% 
+  group_by(Participant, Condition, TrialType) %>% 
   summarise(MeanRT = mean(RT),
             SD = sd(RT),
             NumberCorrect = sum(Accuracy),
@@ -150,15 +150,15 @@ SummaryData <- TestData %>%
             PercentAccuracy = (NumberCorrect/TotalTrials)*100)
 
 # EXERCISE: Get average accuracy and RT per participant, separately
-# for concrete and abstract trials.
+# for old and new trials in the concrete and abstract conditions.
 
 ###### Plot data
 library(ggpubr)
-RTPlot <- ggbarplot(data = SummaryData,
+RTPlot <- ggbarplot(data = Condition_Summary,
                     x = "Condition",
                     y = "MeanRT",
                     add = "mean_se")
-# EXERCISE: Plot average accuracy in the two conditions
+# EXERCISE: Plot average RT separately for the old and new trials
 
 ###################### Section 4: Control Flow #####################
 
@@ -173,7 +173,7 @@ if(NumToCheck%%2 == 0){
 # EXERCISE: Define a numeric vector. Then write an if/else statement 
 # to check whether a new variable is of type numeric. If it is, append
 # that variable to the vector. If it is not numeric, print a warning,
-# but leave the vector unchanged
+# but leave the vector unchanged.
 
 # loop through participant IDs and read in each participant's test 
 # phase data
@@ -185,5 +185,31 @@ for(participant in Participants){
 
 # EXERCISE: Loop through an array of 10 numbers. For each number, check
 # whether it is odd or even, and print out whether each one is odd or even
+
+######### Secret extra Section: Basic Statistical Analyses #########
+
+# Run a 2 x 2 repeated-measures ANOVA
+library(ez)
+# On accuracy
+ConditionTrialtype_RTAOV <- ezANOVA(data = ConditionTrialtype_Summary,
+                                     wid = Participant,
+                                     within = c(Condition, TrialType),
+                                     dv = MeanRT)
+ConditionTrialtype_AccAOV <- ezANOVA(data = ConditionTrialtype_Summary,
+                                     wid = Participant,
+                                     within = c(Condition, TrialType),
+                                     dv = PercentAccuracy)
+
+# Run posthoc tests on percent accuracy to probe the interaction
+# Compare abstract and concrete accuracy separately for old and new trials
+ConditionOld_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
+                                data = ConditionTrialtype_Summary %>% 
+                                  filter(TrialType == "Old"),
+                                paired = TRUE)
+ConditionNew_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
+                                data = ConditionTrialtype_Summary %>% 
+                                  filter(TrialType == "New"),
+                                paired = TRUE)
+# EXERCISE: Compare old and new accuracy separately for abstract and concrete trials
 
 
