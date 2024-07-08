@@ -47,7 +47,8 @@ class(c)
 
 # EXERCISE: Calculate the area of a circle based on the radius and
 # print out "The area of a circle with radius XXX is XXXX"
-# HINT: R has a built-in variable called "pi" with the value of pi
+# HINT: The formula for calculating the area of a circle is pi * r-squared
+# HINT: R has a built-in variable called "pi" that stores the value of pi
 
 ##################### Section 3: Data Wrangling ####################
 ###### Vectors
