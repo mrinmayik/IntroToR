@@ -164,10 +164,10 @@ RTPlot <- ggbarplot(data = Condition_Summary,
 
 # if/else statement to check if a number is even or odd
 NumToCheck <- 3
-if(NumToCheck%%2 == 0){
-  print(paste(NumToCheck, "is an even number."))
-}else if(NumToCheck%%2 == 1){
-  print(paste(NumToCheck, "is an odd number."))
+if(NumToCheck < 5){
+  print(paste(NumToCheck, "is less than 5."))
+}else if(NumToCheck > 5 ){
+  print(paste(NumToCheck, "is greater than 5."))
 }
 
 # EXERCISE: Define a numeric vector. Then write an if/else statement 
