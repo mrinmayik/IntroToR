@@ -104,7 +104,7 @@ df <- data.frame("Numbers" = 11:25,
                  "Letters" = letters[1:15])
 # Work with some real (fake) data!
 # Define a variable with the path to the folder
-#DataPath_Mac <- "~/Downloads/IntroToR-main/"
+#DataPath <- "~/Downloads/IntroToR-main/"
 #DataPath <- "C:\Users\[USER_NAME]\Downloads\"
 # Read in Test phase data
 TestData <- read.csv(paste0(DataPath, "TestData.csv"))
@@ -136,13 +136,13 @@ Participant1Data <- TestData[TestData$Participant == "sub-001", ]
 library(dplyr)
 AccuracyData <- TestData %>% 
   select(Accuracy)
-Participant1Data <- Data %>% 
+Participant1Data <- TestData %>% 
   filter(Participant == "sub-001")
 
 ###### Summarise data
 # Get average accuracy and RT per participant
 Condition_Summary <- TestData %>% 
-  group_by(Participant, Condition, TrialType) %>% 
+  group_by(Participant, Condition) %>% 
   summarise(MeanRT = mean(RT),
             SD = sd(RT),
             NumberCorrect = sum(Accuracy),
@@ -159,6 +159,32 @@ RTPlot <- ggbarplot(data = Condition_Summary,
                     y = "MeanRT",
                     add = "mean_se")
 # EXERCISE: Plot average RT separately for the old and new trials
+
+######### Secret extra Section: Basic Statistical Analyses #########
+
+# Run a 2 x 2 repeated-measures ANOVA
+library(ez)
+# On accuracy
+ConditionTrialtype_RTAOV <- ezANOVA(data = ConditionTrialtype_Summary,
+                                    wid = Participant,
+                                    within = c(Condition, TrialType),
+                                    dv = MeanRT)
+ConditionTrialtype_AccAOV <- ezANOVA(data = ConditionTrialtype_Summary,
+                                     wid = Participant,
+                                     within = c(Condition, TrialType),
+                                     dv = PercentAccuracy)
+
+# Run posthoc tests on percent accuracy to probe the interaction
+# Compare abstract and concrete accuracy separately for old and new trials
+ConditionOld_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
+                                data = ConditionTrialtype_Summary %>% 
+                                  filter(TrialType == "Old"),
+                                paired = TRUE)
+ConditionNew_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
+                                data = ConditionTrialtype_Summary %>% 
+                                  filter(TrialType == "New"),
+                                paired = TRUE)
+# EXERCISE: Compare old and new accuracy separately for abstract and concrete trials
 
 ###################### Section 4: Control Flow #####################
 
@@ -185,31 +211,5 @@ for(participant in Participants){
 
 # EXERCISE: Loop through an array of 10 numbers. For each number, check
 # whether it is odd or even, and print out whether each one is odd or even
-
-######### Secret extra Section: Basic Statistical Analyses #########
-
-# Run a 2 x 2 repeated-measures ANOVA
-library(ez)
-# On accuracy
-ConditionTrialtype_RTAOV <- ezANOVA(data = ConditionTrialtype_Summary,
-                                     wid = Participant,
-                                     within = c(Condition, TrialType),
-                                     dv = MeanRT)
-ConditionTrialtype_AccAOV <- ezANOVA(data = ConditionTrialtype_Summary,
-                                     wid = Participant,
-                                     within = c(Condition, TrialType),
-                                     dv = PercentAccuracy)
-
-# Run posthoc tests on percent accuracy to probe the interaction
-# Compare abstract and concrete accuracy separately for old and new trials
-ConditionOld_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
-                                data = ConditionTrialtype_Summary %>% 
-                                  filter(TrialType == "Old"),
-                                paired = TRUE)
-ConditionNew_AccTtest <- t.test(formula = PercentAccuracy ~ Condition,
-                                data = ConditionTrialtype_Summary %>% 
-                                  filter(TrialType == "New"),
-                                paired = TRUE)
-# EXERCISE: Compare old and new accuracy separately for abstract and concrete trials
 
 
